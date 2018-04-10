@@ -1,5 +1,7 @@
 # Webpack4Tutorial
 
+Webpack is used to compile JavaScript modules.
+
 Step by step guides.
 
 ```
@@ -18,7 +20,7 @@ package.json
 ```json
 {
   "scripts": {
-    "start": "webpack --config webpack.config.js"
+    "build": "webpack"
   }
 }
 ```
@@ -34,4 +36,13 @@ $ touch src/index.js
 The `npx` command (Node>=8.2) runs webpack binary (./node_modules/.bin/webpack).
 ```
 $ npx webpack
+$ npm run build
+```
+
+## Asset management
+
+### Loading CSS
+
+```
+$ npm i -D style-loader css-loader
 ```
