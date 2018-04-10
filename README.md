@@ -122,3 +122,48 @@ module.exports = {
   }
 };
 ```
+
+## Development
+
+### Using source maps
+
+webpack.config.js
+```javascript
+module.exports = {
+  entry: {
+    // ...
+  },
+  devtool: 'inline-source-map',
+  plugins: [
+    // ...
+  ],
+  output: {
+    // ...
+  }
+};
+```
+
+### Using webpack-dev-server
+
+```
+$ npm i -D webpack-dev-server
+```
+
+webpack.conf.js
+```javascript
+module.exports = {
+  entry: {
+    // ...
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist'
+  },
+  plugins: [
+    // ...
+  ],
+  output: {
+    // ...
+  }
+};
+```
