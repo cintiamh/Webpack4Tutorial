@@ -41,13 +41,10 @@ $ npm run build
 
 ## Asset management
 
-### Loading CSS
-
 ```
-$ npm i -D style-loader css-loader
+$ npm i -D style-loader css-loader file-loader csv-loader xml-loader
 ```
 
-webpack.config.js
 ```javascript
 const path = require('path');
 
@@ -65,32 +62,7 @@ module.exports = {
           'style-loader',
           'css-loader'
         ]
-      }
-    ]
-  }
-};
-```
-
-```
-$ touch src/style.css
-```
-
-index.js
-```javascript
-import './style.css';
-```
-
-### Loading images & fonts
-
-```
-$ npm i D file-loader
-```
-
-webpack.config.js
-```javascript
-module.exports = {
-  module: {
-    rules: [
+      },
       {
         test: /\.(png|svg|jpg|gif)$/,
         use: ['file-loader']
@@ -98,38 +70,55 @@ module.exports = {
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: ['file-loader']
+      },
+      {
+        test: /\.(csv|tsv)$/,
+        use: [
+          'csv-loader'
+        ]
+      },
+      {
+        test: /\.xml$/,
+        use: [
+          'xml-loader'
+        ]
       }
     ]
   }
 };
 ```
 
-### Loading data
+## Output management
 
-JSON will work by default.
+* multiple files Output
+* HtmlWebpackPlugin: generates the HTML file importing the necessary files
+* CleanWebpackPlugin: clean the `/dist` folder everytime there is a build
+
 ```
-$ npm i -D csv-loader xml-loader
+$ npm i -D html-webpack-plugin
+$ npm i -D clean-webpack-plugin
 ```
 
+webpack.config.js
 ```javascript
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 module.exports = {
-  module: {
-    rules: [
-      {
-         test: /\.(csv|tsv)$/,
-         use: [
-           'csv-loader'
-         ]
-       },
-       {
-         test: /\.xml$/,
-         use: [
-           'xml-loader'
-         ]
-       }
-    ]
+  entry: {
+    app: './src/index.js',
+    print: './src/print.js'
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Output Management'
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
   }
 };
 ```
-
-## Output management
