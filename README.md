@@ -363,3 +363,87 @@ module.exports = {
 ```
 
 ## Production
+
+### Setup
+
+* development
+  - strong source mapping
+  - localhost server
+  - live reloading or hot module replacement
+* Production
+  - minified bundles
+  - lighter weight source maps
+  - optimized assets
+  - improved load time
+
+```
+$ npm i -D webpack-merge uglifyjs-webpack-plugin
+$ touch webpack.common.js
+$ touch webpack.dev.js
+$ touch webpack.prod.js
+```
+
+webpack.common.js
+```javascript
+const path = require('path');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+  entry: {
+    app: './src/index.js'
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Production'
+    })
+  ],
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  }
+};
+```
+
+webpack.dev.js
+```javascript
+const merge = require('webpack-merge');
+const common = require('./webpack.common.js');
+
+module.exports = merge(common, {
+  mode: 'development',
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './dist'
+  }
+});
+```
+
+webpack.prod.js
+```javascript
+const merge = require('webpack-merge');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const common = require('./webpack.common.js');
+
+module.exports = merge(common, {
+  mode: 'production',
+  devtool: 'source-map',
+  plugins: [
+    new UglifyJsPlugin({
+      sourceMap: true
+    })
+  ]
+});
+```
+
+### npm scripts
+
+```json
+{
+  "scripts": {
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+  }
+}
+```
