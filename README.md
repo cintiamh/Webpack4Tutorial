@@ -416,6 +416,17 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './dist'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      },
+    ]
   }
 });
 ```
@@ -425,19 +436,32 @@ webpack.prod.js
 const merge = require('webpack-merge');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const common = require('./webpack.common.js');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        })
+      }
+    ]
+  },
   plugins: [
+    new ExtractTextPlugin('styles.css'),
     new UglifyJsPlugin({
       sourceMap: true
     })
-  ]
+  ],
 });
 ```
 
-### npm scripts
+#### npm scripts
 
 ```json
 {
@@ -446,4 +470,11 @@ module.exports = merge(common, {
     "build": "webpack --config webpack.prod.js",
   }
 }
+```
+
+#### ExtractTextWebpackPlugin
+
+For now, until it gets to v4, use @next
+```
+$ npm i -D extract-text-webpack-plugin@next
 ```
